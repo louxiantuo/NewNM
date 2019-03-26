@@ -28,9 +28,9 @@
 
 // Update these with values suitable for your network.
 
-const char* ssid = "wangkai";
-const char* password = "qwer1234";
-const char* mqtt_server = "47.93.223.142";
+const char* ssid = "downstairs";
+const char* password = "19711219";
+const char* mqtt_server = "louxiantuo.club";
 char message[128];
 char get_message[128];
 
@@ -39,9 +39,11 @@ PubSubClient client(espClient);
 long lastMsg = 0;
 char msg[50];
 int  value = 0;
+int key = 0;
 
 void setup() {
   pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  pinMode(16,OUTPUT);
   Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, 1883);
@@ -73,16 +75,31 @@ void callback(char* topic, byte* payload, unsigned int length) {
   //Serial.print("Message arrived [");
   //Serial.print(topic);
   //Serial.print("] ");
+  char test_off[128] = "turnoff";
+  char test_on[128] = "turnon";
   for (int i = 0; i < length; i++) {
     
     //Serial.print((char)payload[i]);
     message[i] = (char)payload[i];
     
   }
-  message[length] = '\r';
-  message[length+1] = '\n';
+  //message[length] = '\r';
+  //message[length+1] = '\n';
   //char limit[3] = "\r\n";
-  Serial.print(message);
+  Serial.println(message);
+  if(message[0] == '0'){
+    Serial.println("in2low");
+    digitalWrite(16,LOW);  
+    //int k = digitalRead(5);
+    //Serial.println(k);
+    
+  }
+  if(message[0] == '1'){
+    Serial.println("in2high");
+    digitalWrite(16,HIGH);
+    //int k = digitalRead(5);
+    //Serial.println(k);
+  }
   //Serial.print("\r\n");
   
   // Switch on the LED if an 1 was received as first character
@@ -159,4 +176,7 @@ void loop() {
         get_message[n] = ' ';
     }
     i = 0;
+
+    
+    
 }
